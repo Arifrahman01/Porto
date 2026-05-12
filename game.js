@@ -324,6 +324,150 @@ function updateClock() {
 }
 setInterval(updateClock,1000); updateClock();
 
+// ── Load Data ──────────────────────────────────────────
+function populateDOM() {
+  if (typeof PORTFOLIO_DATA === 'undefined') return;
+  const pd = PORTFOLIO_DATA;
+
+  // HUD & General
+  document.querySelector('.loading-title').textContent = pd.personal.name;
+  document.querySelector('.hud-title').textContent = pd.personal.name;
+  document.querySelector('.hud-sub').textContent = pd.personal.shortTitle;
+
+  // About Tab
+  const nameEl = document.querySelector('.modal-name');
+  if (nameEl) nameEl.textContent = pd.personal.name;
+  
+  const titleEl = document.querySelector('.modal-title-text');
+  if (titleEl) titleEl.textContent = pd.personal.title;
+  
+  const locEl = document.querySelector('.modal-location');
+  if (locEl) locEl.textContent = `📍 ${pd.personal.location}`;
+  
+  const bioEl = document.querySelector('.modal-bio');
+  if (bioEl) bioEl.innerHTML = pd.personal.summary;
+  
+  const contactLinks = document.querySelector('.contact-links');
+  if (contactLinks) {
+    contactLinks.innerHTML = `
+      <a href="mailto:${pd.personal.email}" class="contact-chip">✉️ ${pd.personal.email}</a>
+      <a href="${pd.personal.linkedinUrl}" target="_blank" class="contact-chip">💼 LinkedIn</a>
+    `;
+  }
+  
+  const downloadBtn = document.querySelector('.btn-download');
+  if (downloadBtn) downloadBtn.href = pd.personal.cvUrl;
+
+  const profileAvatar = document.querySelector('.profile-avatar-big');
+  if (profileAvatar) profileAvatar.textContent = pd.personal.avatarInitials;
+
+  // Skills
+  const skillsGrid = document.querySelector('.skills-grid');
+  if (skillsGrid) {
+    skillsGrid.innerHTML = pd.skills.map(s => `
+      <div class="skill-card ${s.top ? 'top-skill' : ''}">
+        <div class="skill-icon">${s.icon}</div>
+        <div class="skill-name">${s.name}</div>
+        <div class="skill-bar"><div class="skill-fill" style="width:${s.level}%"></div></div>
+      </div>
+    `).join('');
+  }
+
+  // Education
+  const eduCard = document.querySelector('.edu-card');
+  if (eduCard) {
+    eduCard.innerHTML = `
+      <div class="edu-logo">🏛️</div>
+      <div class="edu-info">
+        <h3>${pd.education.university}</h3>
+        <p class="edu-degree">${pd.education.degree}</p>
+        <p class="edu-year">${pd.education.year}</p>
+        <p class="edu-loc">📍 ${pd.education.location}</p>
+      </div>
+    `;
+  }
+
+  // Certifications
+  const certList = document.querySelector('.cert-list');
+  if (certList) {
+    certList.innerHTML = pd.certifications.map(c => `
+      <div class="cert-item">
+        <div class="cert-icon">${c.icon}</div>
+        <div>
+          <div class="cert-name">${c.name}</div>
+          <div class="cert-issuer">${c.issuer}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Experience Timeline
+  const timeline = document.querySelector('.timeline');
+  if (timeline) {
+    timeline.innerHTML = pd.experiences.map(e => `
+      <div class="timeline-item ${e.current ? 'current' : ''}">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-header">
+            <h3>${e.company}</h3>
+            ${e.current ? '<span class="tl-badge current-badge">Saat Ini</span>' : ''}
+          </div>
+          <p class="tl-role">${e.role}</p>
+          <p class="tl-period">📅 ${e.period}</p>
+          <p class="tl-loc">📍 ${e.location}</p>
+          ${e.description ? `<p class="tl-desc">${e.description}</p>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Projects / Arcade
+  const projectsGrid = document.querySelector('.projects-grid');
+  if (projectsGrid) {
+    projectsGrid.innerHTML = pd.projects.map(p => `
+      <div class="project-card">
+        <div class="project-thumb" style="background: ${p.bgGradient}">
+          <span class="project-thumb-icon">${p.icon}</span>
+        </div>
+        <div class="project-info">
+          <h3>${p.name}</h3>
+          <p>${p.description}</p>
+          <div class="project-tags">
+            ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Contact / Door
+  const contactCards = document.querySelector('.contact-cards');
+  if (contactCards) {
+    contactCards.innerHTML = `
+      <a href="mailto:${pd.personal.email}" class="contact-card-big">
+        <div class="cc-icon">✉️</div>
+        <div class="cc-label">Email</div>
+        <div class="cc-value">${pd.personal.email}</div>
+      </a>
+      <a href="${pd.personal.linkedinUrl}" target="_blank" class="contact-card-big">
+        <div class="cc-icon">💼</div>
+        <div class="cc-label">LinkedIn</div>
+        <div class="cc-value">${pd.personal.linkedinLabel}</div>
+      </a>
+      <div class="contact-card-big">
+        <div class="cc-icon">📍</div>
+        <div class="cc-label">Lokasi</div>
+        <div class="cc-value">${pd.personal.shortLocation}</div>
+      </div>
+      <div class="contact-card-big">
+        <div class="cc-icon">⏰</div>
+        <div class="cc-label">Pengalaman</div>
+        <div class="cc-value">${pd.personal.experienceYears}</div>
+      </div>
+    `;
+  }
+}
+
 // ── Loading ────────────────────────────────────────────
 function drawLoadingChar() {
   const c=document.createElement('canvas'); c.width=48;c.height=72;
@@ -361,4 +505,4 @@ document.addEventListener('keydown',e=>{
     if(document.getElementById('press-start').style.display!=='none') startGame();
 });
 
-drawLoadingChar(); startLoading();
+drawLoadingChar(); populateDOM(); startLoading();
