@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arif Rahman - Interactive Portfolio</title>
+  <meta name="description" content="Portofolio interaktif Arif Rahman - Full-stack Developer, SAP ABAPER, SAP Fiori. Jelajahi dunia game 2D pixel art untuk mengetahui lebih lanjut!">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-content">
+      <div class="pixel-logo">
+        <div class="pixel-char-preview"></div>
+      </div>
+      <h1 class="loading-title">ARIF RAHMAN</h1>
+      <p class="loading-sub">Interactive Portfolio</p>
+      <div class="loading-bar-wrap">
+        <div class="loading-bar" id="loading-bar"></div>
+      </div>
+      <p class="loading-text" id="loading-text">Memuat dunia...</p>
+      <div class="press-start-hint" id="press-start" style="display:none">
+        Tekan <span class="key">ENTER</span> atau <span class="key">KLIK</span> untuk mulai
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Wrapper -->
+  <div id="game-wrapper" style="display:none">
+    <!-- HUD Top -->
+    <div id="hud-top">
+      <div class="hud-name">
+        <span class="hud-avatar">🧑‍💻</span>
+        <div>
+          <div class="hud-title">Arif Rahman</div>
+          <div class="hud-sub">Full-stack Dev · SAP ABAPER</div>
+        </div>
+      </div>
+      <div id="hud-clock">00:00:00</div>
+      <div class="hud-controls">
+        <span><span class="key-small">WASD</span> Gerak</span>
+        <span><span class="key-small">E/SPACE</span> Interaksi</span>
+        <span><span class="key-small">ESC</span> Tutup</span>
+      </div>
+    </div>
+
+    <!-- Canvas -->
+    <div id="canvas-container">
+      <canvas id="gameCanvas"></canvas>
+      <!-- Interaction Prompt -->
+      <div id="interact-prompt" class="hidden">
+        <span class="key-small">SPACE</span> <span id="interact-label">Interaksi</span>
+      </div>
+    </div>
+
+    <!-- Mobile D-Pad -->
+    <div id="dpad">
+      <div class="dpad-grid">
+        <div></div>
+        <button class="dpad-btn" onpointerdown="dpadStart('up')" onpointerup="dpadEnd('up')" onpointerleave="dpadEnd('up')">▲</button>
+        <div></div>
+        <button class="dpad-btn" onpointerdown="dpadStart('left')" onpointerup="dpadEnd('left')" onpointerleave="dpadEnd('left')">◄</button>
+        <button class="dpad-center"></button>
+        <button class="dpad-btn" onpointerdown="dpadStart('right')" onpointerup="dpadEnd('right')" onpointerleave="dpadEnd('right')">►</button>
+        <div></div>
+        <button class="dpad-btn" onpointerdown="dpadStart('down')" onpointerup="dpadEnd('down')" onpointerleave="dpadEnd('down')">▼</button>
+        <div></div>
+      </div>
+      <button class="dpad-action" onpointerdown="dpadAction()">E</button>
+    </div>
+
+    <!-- HUD Bottom -->
+    <div id="hud-bottom">
+      <div class="location-badge">📍 Banjarmasin, Kalimantan Selatan</div>
+      <div class="tip-text">🐱 Temukan kucing tersembunyi di ruangan!</div>
+    </div>
+  </div>
+
+  <!-- OVERLAY -->
+  <div id="overlay" class="hidden" id="overlay"></div>
+
+  <!-- ===== MODALS ===== -->
+
+  <!-- About / Computer Modal -->
+  <div class="modal hidden" id="modal-computer">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-tabs">
+        <button class="tab-btn active" onclick="switchTab('about')">👤 Tentang Saya</button>
+        <button class="tab-btn" onclick="switchTab('skills')">⚡ Keahlian</button>
+      </div>
+      <!-- About Tab -->
+      <div class="tab-content" id="tab-about">
+        <div class="modal-header-section">
+          <div class="profile-avatar-big">AR</div>
+          <div>
+            <h2 class="modal-name">Arif Rahman</h2>
+            <p class="modal-title-text">Full-stack Developer · SAP ABAPER · SAP Fiori · SAP Analytic Cloud</p>
+            <p class="modal-location">📍 Banjarmasin, Kalimantan Selatan, Indonesia</p>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3 class="section-label">Ringkasan</h3>
+          <p class="modal-bio">Bekerja dibidang programming sejak <strong>2014</strong> hingga sekarang. Saat ini fokus dalam pengembangan dan perbaikan <strong>sistem manajemen dealer berbasis WEB</strong> yang berfokus pada kecepatan akses dan efisiensi.</p>
+        </div>
+        <div class="modal-section">
+          <h3 class="section-label">Kontak</h3>
+          <div class="contact-links">
+            <a href="mailto:arfrahmann@gmail.com" class="contact-chip">✉️ arfrahmann@gmail.com</a>
+            <a href="https://www.linkedin.com/in/arif-rahman-0b7892209" target="_blank" class="contact-chip">💼 LinkedIn</a>
+          </div>
+        </div>
+        <a href="Profile.pdf" download class="btn-download">⬇️ Download CV (PDF)</a>
+      </div>
+      <!-- Skills Tab -->
+      <div class="tab-content hidden" id="tab-skills">
+        <h2 class="modal-heading">⚡ Keahlian Teknis</h2>
+        <div class="skills-grid">
+          <div class="skill-card top-skill">
+            <div class="skill-icon">🔷</div>
+            <div class="skill-name">SAP ABAP</div>
+            <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
+          </div>
+          <div class="skill-card top-skill">
+            <div class="skill-icon">📊</div>
+            <div class="skill-name">SAP Analytics Cloud</div>
+            <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+          </div>
+          <div class="skill-card top-skill">
+            <div class="skill-icon">📈</div>
+            <div class="skill-name">Data Analysis</div>
+            <div class="skill-bar"><div class="skill-fill" style="width:82%"></div></div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-icon">🌐</div>
+            <div class="skill-name">Full-stack Web Dev</div>
+            <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-icon">🎨</div>
+            <div class="skill-name">SAP Fiori</div>
+            <div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-icon">🗄️</div>
+            <div class="skill-name">SQL / Database</div>
+            <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-icon">🤖</div>
+            <div class="skill-name">Machine Learning (R)</div>
+            <div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-icon">🔧</div>
+            <div class="skill-name">IT Support & Networking</div>
+            <div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookshelf / Education Modal -->
+  <div class="modal hidden" id="modal-bookshelf">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-tabs">
+        <button class="tab-btn active" onclick="switchTabBook('education')">🎓 Pendidikan</button>
+        <button class="tab-btn" onclick="switchTabBook('certs')">🏅 Sertifikasi</button>
+      </div>
+      <div class="tab-content" id="tab-education">
+        <h2 class="modal-heading">🎓 Pendidikan</h2>
+        <div class="edu-card">
+          <div class="edu-logo">🏛️</div>
+          <div class="edu-info">
+            <h3>Universitas Islam Kalimantan Muhammad Arsyad Al Banjari</h3>
+            <p class="edu-degree">Gelar Sarjana, Informatika</p>
+            <p class="edu-year">2014 – 2018</p>
+            <p class="edu-loc">📍 Banjarmasin, Kalimantan Selatan</p>
+          </div>
+        </div>
+      </div>
+      <div class="tab-content hidden" id="tab-certs">
+        <h2 class="modal-heading">🏅 Sertifikasi</h2>
+        <div class="cert-list">
+          <div class="cert-item">
+            <div class="cert-icon">📊</div>
+            <div>
+              <div class="cert-name">Data Visualization in Data Science using R</div>
+              <div class="cert-issuer">DQLab</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-icon">🤖</div>
+            <div>
+              <div class="cert-name">Guide to Learn SQL with AI at DQLab</div>
+              <div class="cert-issuer">DQLab</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-icon">🛒</div>
+            <div>
+              <div class="cert-name">Project Machine Learning for Retail with R: Product Packaging</div>
+              <div class="cert-issuer">DQLab</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-icon">🔷</div>
+            <div>
+              <div class="cert-name">SAP Training Course, SAP ABAP and FIORI</div>
+              <div class="cert-issuer">SAP</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trophy / Experience Modal -->
+  <div class="modal hidden" id="modal-trophy">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2 class="modal-heading">🏆 Pengalaman Kerja</h2>
+      <div class="timeline">
+        <div class="timeline-item current">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-header">
+              <h3>PT. Jhonlin Group</h3>
+              <span class="tl-badge current-badge">Saat Ini</span>
+            </div>
+            <p class="tl-role">Staff Web Developer</p>
+            <p class="tl-period">📅 Mei 2022 – Sekarang · 4+ tahun</p>
+            <p class="tl-loc">📍 Batulicin, Kalimantan Selatan</p>
+            <p class="tl-desc">Pengembangan dan pemeliharaan sistem manajemen dealer berbasis web.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-header">
+              <h3>PT Acarya Data Esa</h3>
+            </div>
+            <p class="tl-role">Web Programmer</p>
+            <p class="tl-period">📅 Februari 2023 – Juli 2023 · 6 bulan</p>
+            <p class="tl-loc">📍 Jakarta Raya, Indonesia</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-header">
+              <h3>Trio Motor</h3>
+            </div>
+            <p class="tl-role">Software Programmer / Web Programmer</p>
+            <p class="tl-period">📅 April 2019 – Mei 2022 · 3 tahun 2 bulan</p>
+            <p class="tl-loc">📍 Banjarmasin, Kalimantan Selatan</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-header">
+              <h3>PT. Syifa Medika Persada</h3>
+            </div>
+            <p class="tl-role">Information Technology Staff</p>
+            <p class="tl-period">📅 Februari 2018 – Desember 2018 · 11 bulan</p>
+            <p class="tl-loc">📍 Banjarbaru, Kalimantan Selatan</p>
+            <p class="tl-desc">Pengembangan Sistem, Perbaikan Perangkat Periferal, Pengelolaan Jaringan.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arcade / Projects Modal -->
+  <div class="modal hidden" id="modal-arcade">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2 class="modal-heading">🕹️ Proyek & Portofolio</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-thumb" style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364)">
+            <span class="project-thumb-icon">🚗</span>
+          </div>
+          <div class="project-info">
+            <h3>Dealer Management System</h3>
+            <p>Sistem manajemen dealer berbasis WEB dengan fokus performa dan kecepatan akses untuk PT. Jhonlin Group.</p>
+            <div class="project-tags">
+              <span class="tag">Web</span><span class="tag">PHP</span><span class="tag">MySQL</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-thumb" style="background: linear-gradient(135deg, #1a0533, #3d0b6e, #7b2fff)">
+            <span class="project-thumb-icon">🔷</span>
+          </div>
+          <div class="project-info">
+            <h3>SAP ABAP Custom Programs</h3>
+            <p>Pengembangan program SAP ABAP kustom dan laporan bisnis menggunakan SAP Fiori untuk enterprise client.</p>
+            <div class="project-tags">
+              <span class="tag">SAP ABAP</span><span class="tag">SAP Fiori</span><span class="tag">SAPUI5</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-thumb" style="background: linear-gradient(135deg, #0d2b1d, #1a5c3a, #00c853)">
+            <span class="project-thumb-icon">📊</span>
+          </div>
+          <div class="project-info">
+            <h3>SAP Analytics Cloud Dashboard</h3>
+            <p>Dashboard analitik bisnis real-time menggunakan SAP Analytics Cloud untuk visualisasi data perusahaan.</p>
+            <div class="project-tags">
+              <span class="tag">SAP AC</span><span class="tag">Data Analysis</span><span class="tag">BI</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-thumb" style="background: linear-gradient(135deg, #1a1200, #4a3500, #f5a623)">
+            <span class="project-thumb-icon">🤖</span>
+          </div>
+          <div class="project-info">
+            <h3>ML Retail - Product Packaging</h3>
+            <p>Proyek Machine Learning untuk retail menggunakan R, analisis data penjualan dan optimasi pengemasan produk.</p>
+            <div class="project-tags">
+              <span class="tag">R</span><span class="tag">Machine Learning</span><span class="tag">DQLab</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Door / Contact Modal -->
+  <div class="modal hidden" id="modal-door">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2 class="modal-heading">📬 Hubungi Saya</h2>
+      <p class="contact-intro">Tertarik untuk berkolaborasi? Jangan ragu untuk menghubungi saya!</p>
+      <div class="contact-cards">
+        <a href="mailto:arfrahmann@gmail.com" class="contact-card-big">
+          <div class="cc-icon">✉️</div>
+          <div class="cc-label">Email</div>
+          <div class="cc-value">arfrahmann@gmail.com</div>
+        </a>
+        <a href="https://www.linkedin.com/in/arif-rahman-0b7892209" target="_blank" class="contact-card-big">
+          <div class="cc-icon">💼</div>
+          <div class="cc-label">LinkedIn</div>
+          <div class="cc-value">arif-rahman-0b7892209</div>
+        </a>
+        <div class="contact-card-big">
+          <div class="cc-icon">📍</div>
+          <div class="cc-label">Lokasi</div>
+          <div class="cc-value">Banjarmasin, Kalimantan Selatan</div>
+        </div>
+        <div class="contact-card-big">
+          <div class="cc-icon">⏰</div>
+          <div class="cc-label">Pengalaman</div>
+          <div class="cc-value">10+ tahun (sejak 2014)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
