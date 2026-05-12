@@ -443,7 +443,13 @@ function populateDOM() {
   // Contact / Door
   const contactCards = document.querySelector('.contact-cards');
   if (contactCards) {
+    const waMessage = encodeURIComponent("Halo Arif! Saya melihat portofolio interaktif Anda dan tertarik untuk berdiskusi lebih lanjut.");
     contactCards.innerHTML = `
+      <a href="https://wa.me/${pd.personal.whatsapp}?text=${waMessage}" target="_blank" class="contact-card-big wa-btn" style="grid-column: 1 / -1; background: linear-gradient(135deg, #166534, #22c55e); color: white; border-color: #22c55e;">
+        <div class="cc-icon">💬</div>
+        <div class="cc-label" style="color: #dcfce7;">Chat via WhatsApp</div>
+        <div class="cc-value" style="color: white; font-weight: bold;">Mulai Diskusi / Hire Me</div>
+      </a>
       <a href="mailto:${pd.personal.email}" class="contact-card-big">
         <div class="cc-icon">✉️</div>
         <div class="cc-label">Email</div>

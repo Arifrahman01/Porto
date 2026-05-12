@@ -11,7 +11,8 @@ const PORTFOLIO_DATA = {
     linkedinLabel: "arif-rahman-0b7892209",
     cvUrl: "Profile.pdf",
     experienceYears: "10+ tahun (sejak 2014)",
-    avatarInitials: "AR"
+    avatarInitials: "AR",
+    whatsapp: "6280000000000" // GANTI DENGAN NOMOR WA ANDA (Gunakan 62 di awal)
   },
   skills: [
     { name: "SAP ABAP", icon: "🔷", level: 90, top: true },
